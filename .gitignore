@@ -1,0 +1,6 @@
+# Include all hidden files from every subdirectory
+# **/.*
+# Ignore .DS_Store files
+**/.DS_Store
+
+

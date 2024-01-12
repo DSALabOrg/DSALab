@@ -21,8 +21,7 @@ This repo is mainly created to help each other in contributing test cases for DS
 
 ### 5. Examples of Contributions:
 
-- Opening an issue.
-- Improving the repo.
+- Opening an issues
 - Solving specific issues.
 - Enhancing documentation.
 - Adding new test cases.

@@ -1,0 +1,9 @@
+a Charlie 9 09:30
+a Charlie 9 08:45
+a Charlie 9 09:45
+a Charlie 8 11:00
+p
+d Charlie 09:45
+u Charlie 08:45 10
+p
+e

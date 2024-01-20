@@ -1,0 +1,12 @@
+Alice 5 10:00
+Charlie 4 11:00
+Bob 3 10:30
+Alice 5 10:00
+Charlie 4 11:00
+Bob 3 10:30
+Charlie 4 11:00
+David 6 12:30
+Charlie 4 11:00
+Charlie 7 11:00
+David 6 12:30
+Charlie 7 11:00

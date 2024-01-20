@@ -1,0 +1,14 @@
+a Alice 5 10:00
+a Bob 3 10:30
+a Charlie 4 11:00
+p
+t
+p
+d Bob 10:30
+p
+a David 6 12:30
+p
+u Charlie 11:00 7
+p
+c
+e

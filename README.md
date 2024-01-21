@@ -1,6 +1,6 @@
 ## 1. Project Description:
 
-### ❤️‍🔥❤️‍🔥Script for evaluating Assignments is also available now.[ Click Here on how to use ](./Scripts/README.md)❤️‍🔥❤️‍🔥❤
+### ❤️‍🔥❤️‍🔥Script for evaluating Assignments is also available now.[ Click Here on how to use ](./Scripts/README.md)❤️‍🔥❤️‍🔥
 
 This repo is mainly created to help each other in contributing test cases for DSA Lab and **Evaluating the script simliar to lab but with slightly more benefits.**
 Everyone is welcome to contribute to this repo.We requested many times to the PD Lab team to provide us with more test cases but they didn't provide us with the test cases.So we decided to create our own test cases and help each other in the process. Anyone having potential edge case or find any bug or typo in this repo can keep a PR.We are happy to merge it.

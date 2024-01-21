@@ -100,14 +100,14 @@ function main() {
 
             try {
                 let start = Date.now();
-                let child = spawnSync('sh', ['-c', './a.out <input.txt >output.txt'], { timeout: 1000 });
+                let child = spawnSync('sh', ['-c', './a.out <input.txt >output.txt'], { timeout: 2000 });
 
                 if (child.error || child.signal === 'SIGTERM') {
                     infinity = true;
                     noofInfinteLoops++;
 
                     console.log("Might be an infinite loop . Please debug before running again");
-                    console.error('The process was killed because it did not finish within 1000 ms \n');
+                    console.error('The process was killed because it did not finish within 2000 ms \n');
                     console.log("Adjust time accordingly if 1000ms is not enough on line: 103 in evaluate.js\n\n");
                     console.error('\x1b[31m%s\x1b[0m', "Infinite loop may cause your system breakdown or crash. So please restart your system before executing script again.\n\n");
                 }

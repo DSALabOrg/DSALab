@@ -45,42 +45,52 @@ function main() {
 
     let Wrong = path.join(__dirname, 'WrongOutputs' + folder);
     let Correct = path.join(__dirname, 'CorrectOutputs' + folder);
+    let ScriptReport = path.join(__dirname, 'ScriptReport.txt');
+    fs.writeFileSync(ScriptReport, "");
+    //After every run it will delete the previous files and create new files.
     if (fs.existsSync(Wrong)) {
         fs.rmdirSync(Wrong, { recursive: true });
     }
     fs.mkdirSync(Wrong);
     if (fs.existsSync(Correct)) {
         fs.rmdirSync(Correct, { recursive: true });
-
     }
     fs.mkdirSync(Correct);
+
+    //Check if the folder exists
     try {
         fs.accessSync(folder);
     } catch (err) {
         console.error("Wrong Question Folder");
+        fs.appendFileSync(ScriptReport, "Wrong Question Folder\n");
         process.exit(1);
     }
 
 
     let cFiles = fs.readdirSync(cFilesFolder);
 
-    //it will work for only q0-q9.
+    //it will work for only q0-q9.(Max 10 questions)
     let cFile = cFiles.find(f => f.endsWith(".c") && f[f.length - 3] === folder[folder.length - 1]);
     let result = validateNames(cFilesFolder, cFile);
     if (result) {
         console.log("\x1b[33m\x1b[1mValid folder and file names\x1b[0m\n");
+        fs.appendFileSync(ScriptReport, "Valid folder and file names\n");
     }
     else {
         console.log("\x1b[91mInvalid folder or file names. Please do remember to keep the folder in this dir or if it is preesent with wrong name then rename the folder and file names as per the instructions given in the pdf.\n\x1b[0m");
         console.log("\x1b[91mBut our script will try to evaluate your code. If not worked, please rename and try again.\x1b[0m\n");
+        fs.appendFileSync(ScriptReport, "Invalid folder or file names. Please do remember to keep the folder in this dir or if it is preesent with wrong name then rename the folder and file names as per the instructions given in the pdf.");
+        fs.appendFileSync(ScriptReport, "But our script will try to evaluate your code. If not worked, please rename and try again.\n");
     }
     console.log("File : " + cFile);
+    fs.appendFileSync(ScriptReport, "File : " + cFile + "\n");
 
     let pgmname = path.join(cFilesFolder, cFile);
     try {
         execSync(`gcc ${pgmname} -lm`);
     } catch (err) {
         console.error("\n\nCompilation Error!!!!.\n\n Not Compiled");
+        fs.appendFileSync(ScriptReport, "Compilation Error!!!!.\n\n Not Compiled\n");
         process.exit(1);
     }
 
@@ -95,6 +105,7 @@ function main() {
             fs.copyFileSync(inputfile, "input.txt");
             if (!fs.readFileSync('input.txt', 'utf8')) {
                 console.log("Input file is empty");
+                fs.appendFileSync(ScriptReport, "Input file is empty\n");
                 process.exit(1);
             }
 
@@ -110,21 +121,29 @@ function main() {
                     console.error('The process was killed because it did not finish within 2000 ms \n');
                     console.log("Adjust time accordingly if 1000ms is not enough on line: 103 in evaluate.js\n\n");
                     console.error('\x1b[31m%s\x1b[0m', "Infinite loop may cause your system breakdown or crash. So please restart your system before executing script again.\n\n");
+                    fs.appendFileSync(ScriptReport, "Might be an infinite loop . Please debug before running again\n");
+                    fs.appendFileSync(ScriptReport, 'The process was killed because it did not finish within 2000 ms \n');
+                    fs.appendFileSync(ScriptReport, "Adjust time accordingly if 1000ms is not enough on line: 103 in evaluate.js\n\n");
+                    fs.appendFileSync(ScriptReport, "Infinite loop may cause your system breakdown or crash. So please restart your system before executing script again.\n\n");
                 }
 
                 let end = Date.now();
                 let duration = end - start;
                 console.log(`Execution time: \x1b[34m${duration} ms\x1b[0m`);
+                fs.appendFileSync(ScriptReport, `Execution time: ${duration} ms\n`);
 
                 let stats = fs.statSync("output.txt");
                 let fileSizeInBytes = stats.size;
                 console.log(`File size: \x1b[34m${fileSizeInBytes} Bytes\x1b[0m`);
+                fs.appendFileSync(ScriptReport, `File size: ${fileSizeInBytes} Bytes\n`);
 
                 if (fileSizeInBytes > 500 * 1024) {
                     console.log("Output file is too large. Consider deleting it.");
+                    fs.appendFileSync(ScriptReport, "Output file is too large. Consider deleting it.\n");
                 }
             } catch (err) {
                 console.error(`Execution error for testcase #${f[f.length - 5]}: ${err}`);
+                fs.appendFileSync(ScriptReport, `Execution error for testcase #${f[f.length - 5]}: ${err}\n`);
                 process.exit(1);
             }
             //valid input file names are {in}+{randomtext}+{number}.txt
@@ -137,34 +156,48 @@ function main() {
 
             if (cotxt === proctxt) {
                 console.log(`\x1b[32m\tTestcase #${testcaseno}: Correct\x1b[0m`); // Green for correct
+                fs.appendFileSync(ScriptReport, `Testcase #${testcaseno}: Correct\n\n`);
                 correct.push(testcaseno);
                 fs.writeFileSync(path.join(Correct, `TestCase:${testcaseno}.txt`), "");
                 let inputContent = fs.readFileSync("input.txt", "utf8");
-                fs.appendFileSync(path.join(Correct, `TestCase:${testcaseno}.txt`), "Input:\n" + inputContent + "\n");
-                fs.appendFileSync(path.join(Correct, `TestCase:${testcaseno}.txt`), "\nYour Output:\n");
-                fs.appendFileSync(path.join(Correct, `TestCase:${testcaseno}.txt`), proctxt + "\n");
-                fs.appendFileSync(path.join(Correct, `TestCase:${testcaseno}.txt`), "\n\nExpected Output:\n");
-                fs.appendFileSync(path.join(Correct, `TestCase:${testcaseno}.txt`), cotxt);
+                fs.appendFileSync(path.join(Correct, `TestCase-${testcaseno}.txt`), "Input:\n" + inputContent + "\n");
+                fs.appendFileSync(path.join(Correct, `TestCase-${testcaseno}.txt`), "\nYour Output:\n");
+                fs.appendFileSync(path.join(Correct, `TestCase-${testcaseno}.txt`), proctxt + "\n");
+                fs.appendFileSync(path.join(Correct, `TestCase-${testcaseno}.txt`), "\n\nExpected Output:\n");
+                fs.appendFileSync(path.join(Correct, `TestCase-${testcaseno}.txt`), cotxt);
+
+
+                let content = fs.readFileSync(path.join(Correct, `TestCase-${testcaseno}.txt`), "utf8");
+                fs.appendFileSync(ScriptReport, content);
+
             } else {
-                if (infinity)
+                if (infinity) {
                     console.log(`\x1b[31m\tTestcase #${testcaseno}: Wrong (Might be an infinite loop)\x1b[0m\n\n`); // Red for wrong
-                else
+                    fs.appendFileSync(ScriptReport, `Testcase #${testcaseno}: Wrong (Might be an infinite loop)\n\n`);
+                }
+                else {
                     console.log(`\x1b[31m\tTestcase #${testcaseno}: Wrong\x1b[0m\n\n`); // Red for wrong
+                    fs.appendFileSync(ScriptReport, `Testcase #${testcaseno}: Wrong\n\n`);
+                }
 
                 wrong.push(testcaseno);
                 if (noofInfinteLoops > 1) {
                     console.error('\x1b[31m%s\x1b[0m', "Already 2 infinite loops are detected in these test cases. Please restart the computer and debug again or you  can use htop command please refer the documentation\n\n");
+                    fs.appendFileSync(ScriptReport, "Already 2 infinite loops are detected in these test cases. Please restart the computer and debug again or you  can use htop command please refer the documentation\n\n");
+                    fs.appendFileSync(ScriptReport, "Sorry to say but your two processors are using 100% because two infinte loops are running. So please restart your system and debug again or stop the process using htop command.Please google it .\n\n")
                     process.exit(1);
                 }
                 fs.writeFileSync(path.join(Wrong, `TestCase:${testcaseno}.txt`), "");
                 let inputContent = fs.readFileSync("input.txt", "utf8");
-                fs.appendFileSync(path.join(Wrong, `TestCase:${testcaseno}.txt`), "Input:\n" + inputContent + "\n");
-                fs.appendFileSync(path.join(Wrong, `TestCase:${testcaseno}.txt`), "\nYour Output:\n");
-                fs.appendFileSync(path.join(Wrong, `TestCase:${testcaseno}.txt`), proctxt + "\n");
-                fs.appendFileSync(path.join(Wrong, `TestCase:${testcaseno}.txt`), "\n\nExpected Output:\n");
-                fs.appendFileSync(path.join(Wrong, `TestCase:${testcaseno}.txt`), cotxt);
-                fs.appendFileSync(path.join(Wrong, `TestCase:${testcaseno}.txt`), "Explanation Link(Hold Ctrl and Click)\n");
-                fs.appendFileSync(path.join(Wrong, `TestCase:${testcaseno}.txt`), `https://github.com/nothuman2718/DSALab/blob/main/Test%20Cases/Cycle%201_Part%20A/Q${folder[1]}.md`)
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), "Input:\n" + inputContent + "\n");
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), "\nYour Output:\n");
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), proctxt + "\n");
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), "\n\nExpected Output:\n");
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), cotxt);
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), "Explanation Link(Hold Ctrl and Click)\n");
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), `https://github.com/nothuman2718/DSALab/blob/main/Test%20Cases/Cycle%201_Part%20A/Q${folder[1]}.md`);
+                let content = fs.readFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), "utf8");
+                fs.appendFileSync(ScriptReport, content);
             }
         }
     }
@@ -173,8 +206,11 @@ function main() {
     wrong.sort();
 
     console.log(`\nCORRECT : \x1b[32m${correct.join(' ')}\x1b[0m`);
+    fs.appendFileSync(ScriptReport, `CORRECT : ${correct.join(' ')}\n`);
     console.log(`WRONG   : \x1b[31m${wrong.join(' ')}\x1b[0m`);
+    fs.appendFileSync(ScriptReport, `WRONG   : ${wrong.join(' ')}\n\n`);
     console.log(`\n\tPassed \x1b[34m${correct.length} / ${ntestcase}\x1b[0m\n`);
+    fs.appendFileSync(ScriptReport, `\n\tPassed ${correct.length} / ${ntestcase}\n`);
     //Clean a.out and output.txt and input.txt
     if (fs.existsSync("a.out"))
         execSync("rm a.out");

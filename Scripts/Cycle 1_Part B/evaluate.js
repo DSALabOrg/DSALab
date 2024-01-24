@@ -12,13 +12,11 @@ function validateNames(folderName, fileName) {
 
     // Test the folder name
     if (!folderRegex.test(folderName)) {
-        console.log("Invalid folder name");
         return false;
     }
 
     // Test the file name
     if (!fileRegex.test(fileName)) {
-        console.log("Invalid file name");
         return false;
     }
 
@@ -26,10 +24,10 @@ function validateNames(folderName, fileName) {
 }
 
 function main() {
-    let folder = process.argv[2];
-    let files = fs.readdirSync(__dirname);
+    let qn = process.argv[2];
+    let contentInDir = fs.readdirSync(__dirname);
     let cFilesFolder;
-    for (let f of files) {
+    for (let f of contentInDir) {
         if (f.startsWith("ASSG")) {
             const stats = fs.lstatSync(f);
             if (stats.isDirectory()) {
@@ -43,23 +41,23 @@ function main() {
         process.exit(1);
     }
 
-    let Wrong = path.join(__dirname, 'WrongOutputs' + folder);
-    let Correct = path.join(__dirname, 'CorrectOutputs' + folder);
+    let Wrong = path.join(__dirname, 'WrongOutputs' + qn);
+    let Correct = path.join(__dirname, 'CorrectOutputs' + qn);
     let ScriptReport = path.join(__dirname, 'ScriptReport.txt');
     fs.writeFileSync(ScriptReport, "");
     //After every run it will delete the previous files and create new files.
     if (fs.existsSync(Wrong)) {
-        fs.rmdirSync(Wrong, { recursive: true });
+        fs.rmSync(Wrong, { recursive: true });
     }
     fs.mkdirSync(Wrong);
     if (fs.existsSync(Correct)) {
-        fs.rmdirSync(Correct, { recursive: true });
+        fs.rmSync(Correct, { recursive: true });
     }
     fs.mkdirSync(Correct);
 
     //Check if the folder exists
     try {
-        fs.accessSync(folder);
+        fs.accessSync(qn);
     } catch (err) {
         console.error("Wrong Question Folder");
         fs.appendFileSync(ScriptReport, "Wrong Question Folder\n");
@@ -70,14 +68,14 @@ function main() {
     let cFiles = fs.readdirSync(cFilesFolder);
 
     //it will work for only q0-q9.(Max 10 questions)
-    let cFile = cFiles.find(f => f.endsWith(".c") && f[f.length - 3] === folder[folder.length - 1]);
+    let cFile = cFiles.find(f => f.endsWith(".c") && f[f.length - 3] === qn[qn.length - 1]);
     let result = validateNames(cFilesFolder, cFile);
     if (result) {
         console.log("\x1b[33m\x1b[1mValid folder and file names\x1b[0m\n");
         fs.appendFileSync(ScriptReport, "Valid folder and file names\n");
     }
     else {
-        console.log("\x1b[91mInvalid folder or file names. Please do remember to keep the folder in this dir or if it is preesent with wrong name then rename the folder and file names as per the instructions given in the pdf.\n\x1b[0m");
+        console.log("\x1b[91mInvalid folder or file names. Rename according to instructions given in the pdf.\n\x1b[0m");
         console.log("\x1b[91mBut our script will try to evaluate your code. If not worked, please rename and try again.\x1b[0m\n");
         fs.appendFileSync(ScriptReport, "Invalid folder or file names. Please do remember to keep the folder in this dir or if it is preesent with wrong name then rename the folder and file names as per the instructions given in the pdf.");
         fs.appendFileSync(ScriptReport, "But our script will try to evaluate your code. If not worked, please rename and try again.\n");
@@ -85,23 +83,23 @@ function main() {
     console.log("File : " + cFile);
     fs.appendFileSync(ScriptReport, "File : " + cFile + "\n");
 
-    let pgmname = path.join(cFilesFolder, cFile);
+    let pgmName = path.join(cFilesFolder, cFile);
     try {
-        execSync(`gcc ${pgmname} -lm`);
+        execSync(`gcc ${pgmName} -lm`);
     } catch (err) {
         console.error("\n\nCompilation Error!!!!.\n\n Not Compiled");
         fs.appendFileSync(ScriptReport, "Compilation Error!!!!.\n\n Not Compiled\n");
         process.exit(1);
     }
 
-    let ntestcase = fs.readdirSync(folder).length / 2;
+    let noOfTestCases = fs.readdirSync(qn).length / 2;
     let correct = [];
     let wrong = [];
     let noofInfinteLoops = 0;
-    for (let f of fs.readdirSync(folder)) {
+    for (let f of fs.readdirSync(qn)) {
         let infinity = false;
         if (f.endsWith(".txt") && f.startsWith("in")) {
-            let inputfile = path.join(folder, f);
+            let inputfile = path.join(qn, f);
             fs.copyFileSync(inputfile, "input.txt");
             if (!fs.readFileSync('input.txt', 'utf8')) {
                 console.log("Input file is empty");
@@ -147,56 +145,54 @@ function main() {
                 process.exit(1);
             }
             //valid input file names are {in}+{randomtext}+{number}.txt
-            let [testcaseno] = f.match(/\d+/g).map(Number);
-            let outputf = fs.readFileSync(path.join(folder, `out${testcaseno}.txt`), 'utf8').trim();
-            let outputf1 = fs.readFileSync("output.txt", 'utf8').trim();
+            let [testCaseNumber] = f.match(/\d+/g).map(Number);
+            let correctOutput = fs.readFileSync(path.join(qn, `out${testCaseNumber}.txt`), 'utf8').trim();
+            let yourOutput = fs.readFileSync("output.txt", 'utf8').trim();
 
-            let proctxt = outputf1.split('\n').map(line => line.trim()).join('\n');
-            let cotxt = outputf.split('\n').map(line => line.trim()).join('\n');
+            let proctxt = yourOutput.split('\n').map(line => line.trim()).join('\n');
+            let cotxt = correctOutput.split('\n').map(line => line.trim()).join('\n');
 
             if (cotxt === proctxt) {
-                console.log(`\x1b[32m\tTestcase #${testcaseno}: Correct\x1b[0m`); // Green for correct
-                fs.appendFileSync(ScriptReport, `Testcase #${testcaseno}: Correct\n\n`);
-                correct.push(testcaseno);
-                fs.writeFileSync(path.join(Correct, `TestCase:${testcaseno}.txt`), "");
+                console.log(`\x1b[32m\tTestcase #${testCaseNumber}: Correct\x1b[0m\n\n`); // Green for correct
+                fs.appendFileSync(ScriptReport, `Testcase #${testCaseNumber}: Correct\n\n`);
+                correct.push(testCaseNumber);
                 let inputContent = fs.readFileSync("input.txt", "utf8");
-                fs.appendFileSync(path.join(Correct, `TestCase-${testcaseno}.txt`), "Input:\n" + inputContent + "\n");
-                fs.appendFileSync(path.join(Correct, `TestCase-${testcaseno}.txt`), "\nYour Output:\n");
-                fs.appendFileSync(path.join(Correct, `TestCase-${testcaseno}.txt`), proctxt + "\n");
-                fs.appendFileSync(path.join(Correct, `TestCase-${testcaseno}.txt`), "\n\nExpected Output:\n");
-                fs.appendFileSync(path.join(Correct, `TestCase-${testcaseno}.txt`), cotxt);
+                fs.appendFileSync(path.join(Correct, `TestCase-${testCaseNumber}.txt`), "Input:\n" + inputContent + "\n");
+                fs.appendFileSync(path.join(Correct, `TestCase-${testCaseNumber}.txt`), "\nYour Output:\n");
+                fs.appendFileSync(path.join(Correct, `TestCase-${testCaseNumber}.txt`), proctxt + "\n");
+                fs.appendFileSync(path.join(Correct, `TestCase-${testCaseNumber}.txt`), "\n\nExpected Output:\n");
+                fs.appendFileSync(path.join(Correct, `TestCase-${testCaseNumber}.txt`), cotxt);
 
 
-                let content = fs.readFileSync(path.join(Correct, `TestCase-${testcaseno}.txt`), "utf8");
+                let content = fs.readFileSync(path.join(Correct, `TestCase-${testCaseNumber}.txt`), "utf8");
                 fs.appendFileSync(ScriptReport, content);
 
             } else {
                 if (infinity) {
-                    console.log(`\x1b[31m\tTestcase #${testcaseno}: Wrong (Might be an infinite loop)\x1b[0m\n\n`); // Red for wrong
-                    fs.appendFileSync(ScriptReport, `Testcase #${testcaseno}: Wrong (Might be an infinite loop)\n\n`);
+                    console.log(`\x1b[31m\tTestcase #${testCaseNumber}: Wrong (Might be an infinite loop)\x1b[0m\n\n`); // Red for wrong
+                    fs.appendFileSync(ScriptReport, `Testcase #${testCaseNumber}: Wrong (Might be an infinite loop)\n\n`);
                 }
                 else {
-                    console.log(`\x1b[31m\tTestcase #${testcaseno}: Wrong\x1b[0m\n\n`); // Red for wrong
-                    fs.appendFileSync(ScriptReport, `Testcase #${testcaseno}: Wrong\n\n`);
+                    console.log(`\x1b[31m\tTestcase #${testCaseNumber}: Wrong\x1b[0m\n\n`); // Red for wrong
+                    fs.appendFileSync(ScriptReport, `Testcase #${testCaseNumber}: Wrong\n\n`);
                 }
 
-                wrong.push(testcaseno);
+                wrong.push(testCaseNumber);
                 if (noofInfinteLoops > 1) {
                     console.error('\x1b[31m%s\x1b[0m', "Already 2 infinite loops are detected in these test cases. Please restart the computer and debug again or you  can use htop command please refer the documentation\n\n");
                     fs.appendFileSync(ScriptReport, "Already 2 infinite loops are detected in these test cases. Please restart the computer and debug again or you  can use htop command please refer the documentation\n\n");
                     fs.appendFileSync(ScriptReport, "Sorry to say but your two processors are using 100% because two infinte loops are running. So please restart your system and debug again or stop the process using htop command.Please google it .\n\n")
                     process.exit(1);
                 }
-                fs.writeFileSync(path.join(Wrong, `TestCase:${testcaseno}.txt`), "");
                 let inputContent = fs.readFileSync("input.txt", "utf8");
-                fs.appendFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), "Input:\n" + inputContent + "\n");
-                fs.appendFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), "\nYour Output:\n");
-                fs.appendFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), proctxt + "\n");
-                fs.appendFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), "\n\nExpected Output:\n");
-                fs.appendFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), cotxt);
-                fs.appendFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), "Explanation Link(Hold Ctrl and Click)\n");
-                fs.appendFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), `https://github.com/nothuman2718/DSALab/blob/main/Test%20Cases/Cycle%201_Part%20A/Q${folder[1]}.md`);
-                let content = fs.readFileSync(path.join(Wrong, `TestCase-${testcaseno}.txt`), "utf8");
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), "Input:\n" + inputContent + "\n");
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), "\nYour Output:\n");
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), proctxt + "\n");
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), "\n\nExpected Output:\n");
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), cotxt);
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), "\n\\nExplanation Link(Hold Ctrl and Click)\n");
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), `https://github.com/nothuman2718/DSALab/blob/main/Test%20Cases/Cycle%201_Part%20B/Q${qn[1]}.md/#test-case-${testCaseNumber}`);
+                let content = fs.readFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), "utf8");
                 fs.appendFileSync(ScriptReport, content);
             }
         }
@@ -209,8 +205,8 @@ function main() {
     fs.appendFileSync(ScriptReport, `CORRECT : ${correct.join(' ')}\n`);
     console.log(`WRONG   : \x1b[31m${wrong.join(' ')}\x1b[0m`);
     fs.appendFileSync(ScriptReport, `WRONG   : ${wrong.join(' ')}\n\n`);
-    console.log(`\n\tPassed \x1b[34m${correct.length} / ${ntestcase}\x1b[0m\n`);
-    fs.appendFileSync(ScriptReport, `\n\tPassed ${correct.length} / ${ntestcase}\n`);
+    console.log(`\n\tPassed \x1b[34m${correct.length} / ${noOfTestCases}\x1b[0m\n`);
+    fs.appendFileSync(ScriptReport, `\n\tPassed ${correct.length} / ${noOfTestCases}\n`);
     //Clean a.out and output.txt and input.txt
     if (fs.existsSync("a.out"))
         execSync("rm a.out");

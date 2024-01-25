@@ -47,11 +47,11 @@ function main() {
     fs.writeFileSync(ScriptReport, "");
     //After every run it will delete the previous files and create new files.
     if (fs.existsSync(Wrong)) {
-        fs.rmSync(Wrong, { recursive: true });
+        fs.rmdirSync(Wrong, { recursive: true });
     }
     fs.mkdirSync(Wrong);
     if (fs.existsSync(Correct)) {
-        fs.rmSync(Correct, { recursive: true });
+        fs.rmdirSync(Correct, { recursive: true });
     }
     fs.mkdirSync(Correct);
 
@@ -190,9 +190,9 @@ function main() {
                 fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), proctxt + "\n");
                 fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), "\n\nExpected Output:\n");
                 fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), cotxt);
-                fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), "\n\\nExplanation Link(Hold Ctrl and Click)\n");
-                fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), `https://github.com/nothuman2718/DSALab/blob/main/Test%20Cases/Cycle%201_Part%20B/Q${qn[1]}.md/#test-case-${testCaseNumber}`);
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), "\n\nExplanation Link(Hold Ctrl and Click)\n");
                 let content = fs.readFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), "utf8");
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), `https://github.com/nothuman2718/DSALab/blob/main/Test%20Cases/Cycle1_PartB/Q${qn[1]}.md/#test-case-${testCaseNumber}`);
                 fs.appendFileSync(ScriptReport, content);
             }
         }

@@ -192,7 +192,7 @@ function main() {
                 fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), cotxt);
                 fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), "\n\nExplanation Link(Hold Ctrl and Click)\n");
                 let content = fs.readFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), "utf8");
-                fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), `https://github.com/nothuman2718/DSALab/blob/main/Test%20Cases/Cycle1_PartB/Q${qn[1]}.md/#test-case-${testCaseNumber}`);
+                fs.appendFileSync(path.join(Wrong, `TestCase-${testCaseNumber}.txt`), `https://github.com/nothuman2718/DSALab/blob/main/TestCases/Cycle1_PartB/Q${qn[1]}.md/#test-case-${testCaseNumber}`);
                 fs.appendFileSync(ScriptReport, content);
             }
         }

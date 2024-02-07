@@ -1,0 +1,7 @@
+5 0
+1 2 3 4 5
+u A B
+s A B
+s B A
+i A B
+e

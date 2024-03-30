@@ -1,7 +1,8 @@
 ## Project Description
 
-This repo is mainly created to help each other in contributing test cases for DSA Lab and **Evaluating the assignment simliar to lab but with slightly more benefits .**
-We welcome everyone to contribute to this repo . Anyone having potential edge case or find any bug or typo in this repo can keep a PR . We will be happy to merge it .
+This repo is mainly created to evaluate your assignment against our test cases for DSA Lab **simliar to lab but with slightly more benefits.**
+
+We welcome everyone to contribute to this repo. Anyone having potential edge case or find any bug or typo in this repo can keep a PR. We will be happy to merge it.
 
 ### Automated Script evaluation similar to lab.
 
@@ -37,7 +38,7 @@ node evaluate.js q1
 
 ### Things to notice.
 
-- Beaware of infinte loops that can crash your system. We are not responsible for that.If that happens immediately restart the system or use this linux command to know the status of your processors and can kill the instruction running on your processors.
+- Beaware of infinte loops that can crash your system. You can check status of your processors using this command.
 ```
  htop 
 ```

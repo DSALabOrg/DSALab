@@ -1,8 +1,18 @@
+
+## This repository is no longer maintained
+  
 ## Project Description
 
 This repo is mainly created to evaluate your assignment against our test cases for DSA Lab **simliar to lab but with slightly more benefits.**
 
 We welcome everyone to contribute to this repo. Anyone having potential edge case or find any bug or typo in this repo can keep a PR. We will be happy to merge it.
+
+## Maintainers
+
+- VLM Lokesh [Mail](mailto:vankayalapati_b220581cs@nitc.ac.in)
+- Devineni Sriram [Mail](mailto:devineni_b220257cs@nitc.ac.in)
+- Varshini Pandiri [Mail](mailto:pandiri_b221096cs@nitc.ac.in)
+- Geetha Meenakshi [Mail](mailto:ramireddy_b220489cs@nitc.ac.in)
 
 ### Automated Script evaluation similar to lab.
 
@@ -60,12 +70,6 @@ node evaluate.js q1
 - And push your changes to your forked repository.
 - Create a pull request to the main repository from Git Hub.
 
-### Maintainers
-
-- VLM Lokesh [Mail](mailto:vankayalapati_b220581cs@nitc.ac.in)
-- Devineni Sriram [Mail](mailto:devineni_b220257cs@nitc.ac.in)
-- Varshini Pandiri [Mail](mailto:pandiri_b221096cs@nitc.ac.in)
-- Geetha Meenakshi [Mail](mailto:ramireddy_b220489cs@nitc.ac.in)
 
 ### Motivation behind this repository.
 
